@@ -1,0 +1,29 @@
+language: python
+python:
+- '3.6'
+services:
+- docker
+env:
+- TORTUGA_BUILD_DOCKER="true"
+before_install:
+- docker pull puppet/puppet-agent
+install:
+- pip install tox
+- git clone https://github.com/UnivaCorporation/tortuga.git tortuga-base
+- cd tortuga-base/
+- pip install -r requirements.txt
+- paver build
+- cd ../
+- build-kit
+script:
+- echo "Done"
+deploy:
+  provider: releases
+  api_key:
+    secure: KFH8w08a2wnDB0cwYN4MLsINcvHYgLNeaG88vZGh02fXsGKqSpFDRrOq0Ye7zV0n1r4UwdETBOvem7YhlfZeWAzA45XPCmrFpJRsgkedguIxcJhBXQ9lO0SBpvCgRZkP5Iac6+N5tV5tCQpv5pk64kPmr10nuCOF9+tdA7+2ZUmv458nxhq5R57EXm+W+VO0QibbSH5+pW+IxclteQfqPEgnQG8DlhDr6lJB5+fpZn7JSzs/OK0KSvhPHKaRTRUILk5jbdKczTLv2NhB8CsZrw0Kwzi3hzdhfEee7AasrjqjWd29IoZhkeafb1YLDMq8nt1bpO+474e3OiAE+lEArNk1eI7STD4PMxAn9xrMjhEzHDkk3njIRZHI/4/UaTjDCS63HuNJRlGG/YvY4taA0X+3OSVn4+6x05+zHcuDZR1XcLvjA7V4a++yTAO/bXWbWanwND2wLOLAp56S0xW2asg2OTyggjHBAV3fQr1gJZQb6H5PAN9lX13/YNRZKCerkQ/+Q/1d0wwm3Kz2Oapflb7Lih/UHNEV77VcFCFhoFRzM1cGY5lAM0OCLKvIYdqpkVEePJV06hICPTScLelcKPnggY6ShrCDubGkfZIGumzmzA+2GpWrhDRV2gbhxdIGl29Ysu5YhMw0egrgpVLB9KiJ/kNvwqg/ngt7BC+u1B4=
+  file_glob: true
+  file: "dist/kit-munin*.tar.bz2"
+  skip_cleanup: true
+  on:
+    all_branches: true
+    tags: true
